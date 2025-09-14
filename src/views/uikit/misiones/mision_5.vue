@@ -115,6 +115,17 @@ onMounted(async () => {
         if (!resMision.ok) throw new Error('Error al obtener misión');
         const data = await resMision.json();
 
+        // 📘 Obtener nivel con el id_nivel de la misión
+        const resNivel = await fetch(`https://command-sql-back.onrender.com/niveles/${data.id_nivel}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!resNivel.ok) throw new Error('Error al obtener nivel');
+        const nivelData = await resNivel.json();
+
+        // 🔗 Concatenar enunciados
+        misionActual.value = `${data.enunciado}\n\n${nivelData.titulo}: ${nivelData.descripcion}`;
+        consultaCorrecta.value = data.consulta_correcta;
+
         misionActual.value = data.enunciado;
         consultaCorrecta.value = data.consulta_correcta;
     } catch (err) {
