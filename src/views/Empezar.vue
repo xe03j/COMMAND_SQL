@@ -128,7 +128,7 @@ const skipStory = () => {
 <template>
     <div class="relative w-full min-h-screen bg-black text-green-400 font-['Press_Start_2P',monospace] overflow-hidden flex flex-col items-center justify-center px-4" style="user-select: text">
         <!-- Fondo -->
-        <img :src="image6" alt="Fondo" class="absolute inset-0 w-screen h-screen object-cover opacity-40 pointer-events-none z-0" />
+        <img :src="image6" alt="Fondo" class="absolute inset-0 w-screen h-screen object-cover opacity-80 pointer-events-none z-0" />
 
         <!-- Overlay oscuro -->
         <div class="absolute inset-0 bg-black/50 pointer-events-none z-5"></div>
