@@ -124,8 +124,7 @@ onMounted(async () => {
         misionActual.value = `${data.enunciado}\n\n${nivelData.titulo}: ${nivelData.descripcion}`;
         consultaCorrecta.value = data.consulta_correcta;
 
-        misionActual.value = data.enunciado;
-        consultaCorrecta.value = data.consulta_correcta;
+
     } catch (err) {
         console.error(err);
         feedback.value.push({ tipo: 'error', msg: '❌ No se pudo cargar misión o usuario.' });
