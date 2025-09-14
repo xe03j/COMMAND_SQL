@@ -48,7 +48,7 @@ const ejecutarComando = async () => {
         }
         setTimeout(() => {
             mostrarPopup.value = false;
-            router.push({ path: `/mision/3` }); // 👈 solo esto
+            router.push({ path: `/mision/2` }); // 👈 solo esto
         }, 2500);
 
         try {
