@@ -15,6 +15,7 @@ const consultaCorrecta = ref('');
 const completada = ref(false);
 const mostrarPopup = ref(false); // popup felicitación
 const usuarioId = ref(null); // se obtiene con /me
+const nivelTitulo = ref('');
 
 const normalizar = (str) => str.trim().replace(/\s+/g, ' ').toLowerCase();
 
@@ -47,9 +48,7 @@ const ejecutarComando = async () => {
         }
         setTimeout(() => {
             mostrarPopup.value = false;
-            router.push({ path: `/mision/2` }).then(() => {
-                router.go(0); // recarga la página
-            });
+            router.push({ path: `/mision/3` }); // 👈 solo esto
         }, 2500);
 
         try {
@@ -128,17 +127,16 @@ onMounted(async () => {
         const data = await resMision.json();
 
         // 📘 Obtener nivel con el id_nivel de la misión
-        const resNivel = await fetch(`https://command-sql-back.onrender.com/niveles/${data.id_nivel}`, {
+        const resNivel = await fetch(`https://command-sql-back.onrender.com/niveles/1`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!resNivel.ok) throw new Error('Error al obtener nivel');
         const nivelData = await resNivel.json();
 
         // 🔗 Concatenar enunciados
-        misionActual.value = `${data.enunciado}\n\n${nivelData.titulo}: ${nivelData.descripcion}`;
+        nivelTitulo.value = nivelData.titulo;
+        misionActual.value = nivelData.descripcion;
         consultaCorrecta.value = data.consulta_correcta;
-
-
     } catch (err) {
         console.error(err);
         feedback.value.push({ tipo: 'error', msg: '❌ No se pudo cargar misión o usuario.' });
@@ -164,7 +162,7 @@ onBeforeUnmount(() => {
         <!-- Contenedor principal -->
         <div :class="$style.cardParent">
             <div :class="$style.card">
-                <div :class="$style.commandSql">MISION 1</div>
+                <div :class="$style.commandSql">MISION 1 — {{ nivelTitulo }}</div>
             </div>
 
             <!-- Misiones -->

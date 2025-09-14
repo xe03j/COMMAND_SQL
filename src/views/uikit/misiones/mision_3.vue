@@ -15,6 +15,7 @@ const consultaCorrecta = ref('');
 const completada = ref(false);
 const mostrarPopup = ref(false); // popup felicitación
 const usuarioId = ref(null); // se obtiene con /me
+const nivelTitulo = ref('');
 
 const normalizar = (str) => str.trim().replace(/\s+/g, ' ').toLowerCase();
 
@@ -47,11 +48,8 @@ const ejecutarComando = async () => {
         }
         setTimeout(() => {
             mostrarPopup.value = false;
-            router.push({ path: `/mision/4` }).then(() => {
-                router.go(0); // recarga la página
-            });
+            router.push({ path: `/mision/4` }); // 👈 solo esto
         }, 2500);
-
         try {
             const token = localStorage.getItem('access_token');
 
@@ -114,17 +112,16 @@ onMounted(async () => {
         const data = await resMision.json();
 
         // 📘 Obtener nivel con el id_nivel de la misión
-        const resNivel = await fetch(`https://command-sql-back.onrender.com/niveles/${data.id_nivel}`, {
+        const resNivel = await fetch(`https://command-sql-back.onrender.com/niveles/3`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!resNivel.ok) throw new Error('Error al obtener nivel');
         const nivelData = await resNivel.json();
 
         // 🔗 Concatenar enunciados
-        misionActual.value = `${data.enunciado}\n\n${nivelData.titulo}: ${nivelData.descripcion}`;
+        nivelTitulo.value = nivelData.titulo;
+        misionActual.value = nivelData.descripcion;
         consultaCorrecta.value = data.consulta_correcta;
-
-
     } catch (err) {
         console.error(err);
         feedback.value.push({ tipo: 'error', msg: '❌ No se pudo cargar misión o usuario.' });
@@ -150,7 +147,7 @@ onBeforeUnmount(() => {
         <!-- Contenedor principal -->
         <div :class="$style.cardParent">
             <div :class="$style.card">
-                <div :class="$style.commandSql">MISION 3</div>
+                <div :class="$style.commandSql">MISION 3 — {{ nivelTitulo }}</div>
             </div>
 
             <!-- Misiones -->
@@ -236,7 +233,7 @@ onBeforeUnmount(() => {
     <div v-if="mostrarPopup" :class="$style.popupOverlay">
         <div :class="$style.popup">
             <h2>🎉 ¡Misión completada!</h2>
-            <p>Has creado la base de datos correctamente.</p>
+            <p>Has superado esta misión con éxito, adelante cadete..</p>
             <button :class="$style.closeButton" @click="mostrarPopup = false">Cerrar</button>
         </div>
     </div>
@@ -482,47 +479,62 @@ onBeforeUnmount(() => {
 .popupOverlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999;
+    backdrop-filter: blur(4px);
 }
 
 .popup {
-    background: black;
-    border: 3px solid #15ff73;
-    border-radius: 12px;
-    padding: 30px;
+    background: linear-gradient(145deg, #121212 0%, #1a1a1a 100%);
+    border: 2px solid #4caf50;
+    border-radius: 15px;
+    padding: 40px 30px;
     text-align: center;
-    color: #15ff73;
-    text-shadow: 0 0 10px #15ff73;
-    box-shadow: 0 0 20px rgba(21, 255, 115, 0.7);
-    animation: popupIn 0.5s ease-out;
+    color: #c8f5d4;
+    text-shadow: 0 0 5px #4caf50;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5), inset 0 0 10px rgba(76, 175, 80, 0.2);
+    animation: popupIn 0.4s ease-out;
+    max-width: 600px;
+    width: 85%;
 }
 
 .popup h2 {
-    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    font-size: clamp(1.6rem, 4.5vw, 2rem);
+    margin-bottom: 20px;
+    letter-spacing: 1.5px;
+    color: #a8f0b1;
+    text-shadow: 0 0 4px #4caf50;
+}
+
+.popup p {
+    font-size: clamp(0.95rem, 2.5vw, 1.2rem);
     margin-bottom: 15px;
+    color: #c8f5d4;
+    text-shadow: 0 0 3px #4caf50;
 }
 
 .closeButton {
     margin-top: 20px;
-    background: #15ff73;
+    background: #4caf50;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
     font-family: 'Press Start 2P';
     font-size: 0.9rem;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    color: black;
-    box-shadow: 0 0 10px #15ff73;
+    color: #121212;
+    box-shadow: 0 0 10px #4caf50 inset;
+    transition: all 0.2s ease-in-out;
 }
 
 .closeButton:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 15px white;
+    background: #67d473;
+    color: #121212;
+    box-shadow: 0 0 15px #67d473 inset;
+    transform: scale(1.03);
 }
 
 @keyframes popupIn {
