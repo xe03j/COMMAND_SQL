@@ -129,7 +129,16 @@ const handleLogin = async () => {
     white-space: nowrap;
     overflow: hidden;
     border-right: 4px solid #15ff73;
-    font-size: clamp(1.5rem, 5vw, 4rem);
+
+    /*Escala de tamaño según pantalla*/
+    font-size: clamp(1rem, 4vw, 3rem);
+
+    /*Evita que rompa el layout*/
+    max-width: 100%;
+    box-sizing: border-box;
+
+    /*Animación*/
     animation: typing 8s steps(17, end) infinite, blink 1s step-end infinite;
+    text-overflow: ellipsis;
 }
 </style>
