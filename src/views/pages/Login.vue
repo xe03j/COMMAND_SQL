@@ -53,7 +53,7 @@ const handleLogin = async () => {
         <!-- Contenedor principal -->
         <div class="relative z-10 flex flex-col items-center w-full max-w-3xl px-6">
             <div class="mb-10 text-center">
-                <h2 class="typing text-green-500 text-4xl md:text-6xl lg:text-8xl font-['Press_Start_2P'] drop-shadow-[0_0_20px_#15ff73]">SELECT * FROM SQL;</h2>
+                <h2 class="typing text-green-500 text-[clamp(1rem,4vw,3rem)] font-['Press_Start_2P'] drop-shadow-[0_0_20px_#15ff73] text-center mx-auto max-w-full overflow-hidden">SELECT * FROM SQL;</h2>
             </div>
 
             <!-- Recuadro de login -->
