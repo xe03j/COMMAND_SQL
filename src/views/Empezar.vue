@@ -3,7 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import image6 from '@/assets/empbg.png';
 import startSound from '@/assets/iniciarSound.mp3';
-import typeSound from '@/assets/typewriter.mp3'; // 🎹 sonido máquina de escribir
+import typeSound from '@/assets/typewriter.mp3';
 import '@fontsource/press-start-2p';
 
 const router = useRouter();
@@ -23,26 +23,43 @@ const finished = ref(false);
 const isTyping = ref(true);
 const lastTimeout = ref(null);
 
-const audioRef = ref(null); // para sonido start
-let typingAudio = null; // audio de tecleo
+let typingAudio = null;
+let typingTimer = null; // control del loop manual
+const typingSpeed = 40;
+const lineDelay = 1000;
 
-const typingSpeed = 40; // ms por carácter
-const lineDelay = 1000; // ms entre líneas
+// --- Audio setup ---
+// Pre-cargar audio (no se reproducirá hasta que el user interactúe)
+onMounted(() => {
+    typingAudio = new Audio(typeSound);
+    typingAudio.volume = 0.5;
+    typingAudio.preload = 'auto';
+});
 
-// reproducir audio loop mientras se escribe un bloque
 function startTypingSound() {
     stopTypingSound();
-    typingAudio = new Audio(typeSound);
-    typingAudio.loop = true;
-    typingAudio.volume = 0.4;
+    if (!typingAudio) return;
+
+    typingAudio.currentTime = 0;
     typingAudio.play().catch(() => {});
+
+    // 🚀 "Loop manual" para móviles (reinicia antes de acabar)
+    typingTimer = setInterval(() => {
+        if (typingAudio && typingAudio.currentTime > typingAudio.duration - 0.2) {
+            typingAudio.currentTime = 0;
+            typingAudio.play().catch(() => {});
+        }
+    }, 200);
 }
 
 function stopTypingSound() {
     if (typingAudio) {
         typingAudio.pause();
         typingAudio.currentTime = 0;
-        typingAudio = null;
+    }
+    if (typingTimer) {
+        clearInterval(typingTimer);
+        typingTimer = null;
     }
 }
 
@@ -58,14 +75,13 @@ function typeNextChar() {
     if (lineIndex.value >= storyText.length) {
         finished.value = true;
         isTyping.value = false;
-        stopTypingSound(); // detener si ya terminó toda la historia
+        stopTypingSound();
         return;
     }
 
     const line = storyText[lineIndex.value];
 
     if (charIndex.value === 0) {
-        // 🚀 arranca sonido al inicio del bloque
         startTypingSound();
     }
 
@@ -74,9 +90,7 @@ function typeNextChar() {
         charIndex.value++;
         lastTimeout.value = setTimeout(typeNextChar, typingSpeed);
     } else {
-        // fin de línea → parar audio
         stopTypingSound();
-
         lastTimeout.value = setTimeout(() => {
             currentLine.value += '\n\n';
             lineIndex.value++;
@@ -95,28 +109,15 @@ onBeforeUnmount(() => {
     stopTypingSound();
 });
 
-/**
- * Reproduce sonido y navega (sin recargar)
- */
 const startGame = async () => {
     try {
-        audioRef.value = new Audio(startSound);
-        audioRef.value.volume = 1;
-        audioRef.value.play().catch(() => {});
-    } catch (e) {
-        console.warn('No se pudo crear audio:', e);
-    }
-
-    try {
-        await router.push('/dashboard');
-    } catch (err) {
-        console.warn('router.push falló:', err);
-    }
+        const audio = new Audio(startSound);
+        audio.volume = 1;
+        await audio.play().catch(() => {});
+    } catch {}
+    await router.push('/dashboard');
 };
 
-/**
- * Skip: cancelar la escritura y navegar inmediatamente
- */
 const skipStory = () => {
     clearPending();
     stopTypingSound();

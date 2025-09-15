@@ -50,7 +50,6 @@ const handleLogin = async () => {
         <!-- Fondo -->
         <img :src="bg" alt="background" class="absolute inset-0 w-full h-full object-cover" />
 
-
         <!-- Contenedor principal -->
         <div class="relative z-10 flex flex-col items-center w-full max-w-3xl px-6">
             <div class="mb-10 text-center">
@@ -86,7 +85,10 @@ const handleLogin = async () => {
                 </div>
 
                 <!-- Error -->
-                <div v-if="errorMessage" class="mt-4 px-4 py-2 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-center">🚨 {{ errorMessage }}</div>
+                <div v-if="errorMessage" class="mt-4 px-4 py-2 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-center">
+                    🚨
+                    {{ errorMessage }}
+                </div>
             </div>
         </div>
 
@@ -127,6 +129,7 @@ const handleLogin = async () => {
     white-space: nowrap;
     overflow: hidden;
     border-right: 4px solid #15ff73;
-    animation: typing 10s steps(25, end) infinite, blink 1s step-end infinite;
+    font-size: clamp(1.5rem, 5vw, 4rem); /* 🔹 responsivo */
+    animation: typing 8s steps(17, end) infinite, blink 1s step-end infinite;
 }
 </style>
