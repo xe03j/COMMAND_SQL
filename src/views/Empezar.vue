@@ -114,7 +114,7 @@ const startGame = async () => {
         const audio = new Audio(startSound);
         audio.volume = 1;
         await audio.play().catch(() => {});
-    } catch {}
+    } catch { /* empty */ }
     await router.push('/dashboard');
 };
 
