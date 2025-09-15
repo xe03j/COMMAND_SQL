@@ -114,7 +114,9 @@ const startGame = async () => {
         const audio = new Audio(startSound);
         audio.volume = 1;
         await audio.play().catch(() => {});
-    } catch { /* empty */ }
+    } catch (error) {
+        console.error('Error en el starsound', error);
+    }
     await router.push('/dashboard');
 };
 

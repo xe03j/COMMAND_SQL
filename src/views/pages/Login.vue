@@ -111,7 +111,7 @@ const handleLogin = async () => {
         width: 0ch;
     }
     50% {
-        width: 21ch;
+        width: 17ch;
     }
     100% {
         width: 0ch;
@@ -129,7 +129,7 @@ const handleLogin = async () => {
     white-space: nowrap;
     overflow: hidden;
     border-right: 4px solid #15ff73;
-    font-size: clamp(1.5rem, 5vw, 4rem); /* 🔹 responsivo */
+    font-size: clamp(1.5rem, 5vw, 4rem);
     animation: typing 8s steps(17, end) infinite, blink 1s step-end infinite;
 }
 </style>
